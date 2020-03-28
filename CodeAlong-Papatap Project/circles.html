@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Circles</title>
+	<script type="text/javascript" src="paper-full.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.js"></script>
+	<link rel="stylesheet" type="text/css" href="circle.css">
+
+	<!-- Define inlined PaperScript associate it with myCanvas -->
+	<script type="text/paperscript" canvas="myCanvas">
+
+	//A dictionary holding all key-related info
+	var keyData = {
+		a: {
+		sound: new Howl({
+  		src: ['sounds/bubbles.mp3']
+	}),
+		color: '#0C51E8'
+	},
+
+	b: {
+		sound: new Howl({
+  		src: ['sounds/clay.mp3']
+	}),
+		color: '#FF7333'
+	},
+
+	c: {
+		sound: new Howl({
+  		src: ['sounds/confetti.mp3']
+	}),
+		color: '#4CFF00'
+	},
+
+	d: {
+		sound: new Howl({
+  		src: ['sounds/corona.mp3']
+	}),
+		color: '#FF338E'
+	},
+
+	e: {
+		sound: new Howl({
+  		src: ['sounds/dotted-spiral.mp3']
+	}),
+		color: '#FFE500'
+	},
+
+	f: {
+		sound: new Howl({
+  		src: ['sounds/flash-1.mp3']
+	}),
+		color: '#079AB3'
+	},
+
+	g: {
+		sound: new Howl({
+  		src: ['sounds/flash-2.mp3']
+	}),
+		color: '#19FFA3'
+	},
+
+	h: {
+		sound: new Howl({
+  		src: ['sounds/flash-3.mp3']
+	}),
+		color: '#CE33FF'
+	},
+
+	i: {
+		sound: new Howl({
+  		src: ['sounds/glimmer.mp3']
+	}),
+		color: '#B37F09'
+	},
+
+	j: {
+		sound: new Howl({
+  		src: ['sounds/moon.mp3']
+	}),
+		color: '#FFB200'
+	},
+
+	k: {
+		sound: new Howl({
+  		src: ['sounds/pinwheel.mp3']
+	}),
+		color: '#03B36D'
+	},
+
+	l: {
+		sound: new Howl({
+  		src: ['sounds/piston-1.mp3']
+	}),
+		color: '#B34709'
+	},
+
+	m: {
+		sound: new Howl({
+  		src: ['sounds/piston-2.mp3']
+	}),
+		color: '#40FF19'
+	},
+
+	n: {
+		sound: new Howl({
+  		src: ['sounds/piston-3.mp3']
+	}),
+		color: '#3E33FF'
+	},
+
+	o: {
+		sound: new Howl({
+  		src: ['sounds/prism-1.mp3']
+	}),
+		color: '#B3AF8B'
+	},
+
+	p: {
+		sound: new Howl({
+  		src: ['sounds/prism-2.mp3']
+	}),
+		color: '#57DDFF'
+	},
+
+	q: {
+		sound: new Howl({
+  		src: ['sounds/prism-3.mp3']
+	}),
+		color: '#FFF03C'
+	},
+
+	r: {
+		sound: new Howl({
+  		src: ['sounds/splits.mp3']
+	}),
+		color: '#FF2470'
+	},
+
+	s: {
+		sound: new Howl({
+  		src: ['sounds/squiggle.mp3']
+	}),
+		color: '#B32254'
+	},
+
+	t: {
+		sound: new Howl({
+  		src: ['sounds/strike.mp3']
+	}),
+		color: '#B37400'
+	},
+
+	u: {
+		sound: new Howl({
+  		src: ['sounds/suspension.mp3']
+	}),
+		color: '#8FFFC4'
+	},
+
+	v: {
+		sound: new Howl({
+  		src: ['sounds/timer.mp3']
+	}),
+		color: '#FFCE75'
+	},
+
+	w: {
+		sound: new Howl({
+  		src: ['sounds/ufo.mp3']
+	}),
+		color: '#C35CFF'
+	},
+
+	x: {
+		sound: new Howl({
+  		src: ['sounds/veil.mp3']
+	}),
+		color: '#8C49B3'
+	},
+
+	y: {
+		sound: new Howl({
+  		src: ['sounds/wipe.mp3']
+	}),
+		color: '#828BB0'
+	},
+
+	z: {
+		sound: new Howl({
+  		src: ['sounds/zig-zag.mp3']
+	}),
+		color: '#FCD3C7'
+	}
+	}
+
+	//New array holding Path.Circle objects
+	var circleArray = [];
+		
+	function onKeyDown(event) {
+		
+		//Checking corresponding key in keyData array
+		if(keyData[event.key]){
+
+			//Taking current maximum view size
+			//and randomize a new point 
+			var maxPoint = new Point(view.size.width, view.size.height);
+			var randomPoint = Point.random();
+			var point = maxPoint * randomPoint;
+		
+			//Drawing new circle from randomized coordinates
+			var myCircle = new Path.Circle(new Point(point), 500);
+			//using color from keyData[corresponding key]
+			myCircle.fillColor = keyData[event.key].color;
+			//and playing sound from such
+			keyData[event.key].sound.play();
+			//Adding Path.Circle object to circleArray
+			circleArray.push(myCircle);
+		}
+	}	
+
+	function onFrame(event){
+
+		//Iterating through Path.Circle object array to animate each of them
+		for(var i = 0;i<circleArray.length;i++){
+			circleArray[i].scale(0.9);
+			circleArray[i].fillColor.hue += 5;
+
+			if(circleArray[i].area <1){
+				circleArray[i].remove(); // remove the circle from the canvas
+      			circleArray.splice(i, 1); // remove the circle from the array
+			}
+		}
+	}
+
+
+	/*
+	// Create a Paper.js Path to draw a line into it:
+	var path = new Path();
+	// Give the stroke a color
+	path.strokeColor = 'red';
+	var start = new Point(0, 100);
+	// Move to start and draw a line from there
+	path.moveTo(start);
+	// Note the plus operator on Point objects.
+	// PaperScript does that for us, and much more!
+	path.lineTo(start + [ 200, -80 ]);*/
+		
+	</script>
+
+
+
+</head>
+<body>
+	<canvas id="myCanvas" resize></canvas>
+</body>
+</html>
